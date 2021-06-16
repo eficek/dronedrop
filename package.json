@@ -28,14 +28,15 @@
     "@babel/preset-env": "^7.14.5",
     "@babel/preset-react": "^7.14.5",
     "babel-loader": "^8.2.2",
-    "webpack": "^5.38.1"
+    "webpack": "^5.39.0"
   },
   "scripts": {
     "start-dev": "npm run build-watch & npm run start-server",
     "start-server": "nodemon main.js -e html,js,css --ignore public",
     "build-watch": "webpack -w --mode development",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm run build-watch & npm run start-server",
+    "start": "node main.js",
+    "heroku-postbuild": "webpack -p",
     "seed": "node seed.js"
   },
   "author": "",
