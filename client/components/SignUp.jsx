@@ -53,16 +53,20 @@ export default class SignUp extends React.Component {
       )
         .then((res) => res.json())
         .then((data) => {
-          console.log(data.results[0].formatted_address);
           if (data.status == "ZERO_RESULTS") {
             alert("Unable to validate address.");
           } else {
-            axios.post(`/api/users/signup`, {
-              name: this.state.username,
-              email: this.state.email,
-              password: this.state.password,
-              address: data.results[0].formatted_address,
-            });
+            axios
+              .post(`/api/users/signup`, {
+                name: this.state.username,
+                email: this.state.email,
+                password: this.state.password,
+                address: data.results[0].formatted_address,
+              })
+              .then((res) => {
+                localStorage.setItem("id", res.data.id);
+                window.location.href = "/users";
+              });
           }
         });
     }
