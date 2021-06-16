@@ -35,7 +35,7 @@
     "start-server": "nodemon main.js -e html,js,css --ignore public",
     "build-watch": "webpack -w --mode development",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "echo 'Running server for production - developers, use npm run start-dev for development' && node main",
+    "start": "npm run build-watch & npm run start-server",
     "seed": "node seed.js"
   },
   "author": "",
