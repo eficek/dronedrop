@@ -51,7 +51,7 @@ export default class SignUp extends React.Component {
     const AUTH_TOKEN = null;
     if (this.handleValidation()) {
       fetch(
-        `https://us-street.api.smartystreets.com/street-address?auth-id=${AUTH_ID}&auth-token=${AUTH_TOKEN}&street=${this.state.address}&city=${this.state.city}&state=${this.state.state}&candidates=10`
+        `https://us-street.api.smartystreets.com/street-address?key=100135023082079584&street=${this.state.address}&city=${this.state.city}&state=${this.state.state}&candidates=10`
       )
         .then((res) => res.json())
         .then((data) => {
