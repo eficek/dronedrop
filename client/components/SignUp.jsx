@@ -46,23 +46,34 @@ export default class SignUp extends React.Component {
   }
 
   async handleSubmit(e) {
+    // TODO: because we make our address validation api request before ensuring that the email and username are unique, users failing unique credential validation will expend an api lookup. is this acceptable for production?
+    const AUTH_ID = null;
+    const AUTH_TOKEN = null;
     if (this.handleValidation()) {
-      const MAPS_API_KEY = "AIzaSyDecxSD0FVCl-ZTs018LDg79l_ye9c4fRU";
       fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address="${this.state.address} ${this.state.city} ${this.state.state}"&key=${MAPS_API_KEY}`
+        `https://us-street.api.smartystreets.com/street-address?auth-id=${AUTH_ID}&auth-token=${AUTH_TOKEN}&street=${this.state.address}&city=${this.state.city}&state=${this.state.state}&candidates=10`
       )
         .then((res) => res.json())
         .then((data) => {
-          console.log(data.results[0].formatted_address);
-          if (data.status == "ZERO_RESULTS") {
-            alert("Unable to validate address.");
+          if (!data[0]) {
+            alert("Unable to validate address, please try again.");
           } else {
-            axios.post(`/api/users/signup`, {
-              name: this.state.username,
-              email: this.state.email,
-              password: this.state.password,
-              address: data.results[0].formatted_address,
-            });
+            axios
+              .post(`/api/users/signup`, {
+                name: this.state.username,
+                email: this.state.email,
+                password: this.state.password,
+                address: `${data[0].delivery_line_1}, ${data[0].last_line}`,
+              })
+              .then((res) => {
+                console.log(res);
+                if (res.status == 201) {
+                  localStorage.setItem("id", res.data.id);
+                  window.location.href = "/users";
+                } else {
+                  alert(res.data.error);
+                }
+              });
           }
         });
     }
