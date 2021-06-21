@@ -46,6 +46,7 @@ export default class SignUp extends React.Component {
   }
 
   async handleSubmit(e) {
+    // TODO: because we make our address validation api request before ensuring that the email and username are unique, users failing unique credential validation will expend an api lookup. is this acceptable for production?
     const AUTH_ID = null;
     const AUTH_TOKEN = null;
     if (this.handleValidation()) {
@@ -54,8 +55,8 @@ export default class SignUp extends React.Component {
       )
         .then((res) => res.json())
         .then((data) => {
-          if (!data) {
-            alert("Unable to validate address.");
+          if (!data[0]) {
+            alert("Unable to validate address, please try again.");
           } else {
             axios
               .post(`/api/users/signup`, {
@@ -65,8 +66,13 @@ export default class SignUp extends React.Component {
                 address: `${data[0].delivery_line_1}, ${data[0].last_line}`,
               })
               .then((res) => {
-                localStorage.setItem("id", res.data.id);
-                window.location.href = "/users";
+                console.log(res);
+                if (res.status == 201) {
+                  localStorage.setItem("id", res.data.id);
+                  window.location.href = "/users";
+                } else {
+                  alert(res.data.error);
+                }
               });
           }
         });

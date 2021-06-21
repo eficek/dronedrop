@@ -21,8 +21,10 @@ router.get("/:userId", (req, res, next) => {
 
 router.post("/signup", async (req, res, next) => {
   User.create(req.body)
-    .then((user) => res.json(user))
-    .catch(next);
+    .then((user) => res.status(201).json(user))
+    .catch((err) => {
+      res.json({ error: err.errors[0].message });
+    });
 });
 
 router.post("/login", async (req, res, next) => {
