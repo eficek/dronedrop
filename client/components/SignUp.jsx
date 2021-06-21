@@ -46,14 +46,15 @@ export default class SignUp extends React.Component {
   }
 
   async handleSubmit(e) {
+    const AUTH_ID = null;
+    const AUTH_TOKEN = null;
     if (this.handleValidation()) {
-      const MAPS_API_KEY = "AIzaSyDecxSD0FVCl-ZTs018LDg79l_ye9c4fRU";
       fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address="${this.state.address} ${this.state.city} ${this.state.state}"&key=${MAPS_API_KEY}`
+        `https://us-street.api.smartystreets.com/street-address?auth-id=${AUTH_ID}&auth-token=${AUTH_TOKEN}&street=${this.state.address}&city=${this.state.city}&state=${this.state.state}&candidates=10`
       )
         .then((res) => res.json())
         .then((data) => {
-          if (data.status == "ZERO_RESULTS") {
+          if (!data) {
             alert("Unable to validate address.");
           } else {
             axios
@@ -61,7 +62,7 @@ export default class SignUp extends React.Component {
                 name: this.state.username,
                 email: this.state.email,
                 password: this.state.password,
-                address: data.results[0].formatted_address,
+                address: `${data[0].delivery_line_1}, ${data[0].last_line}`,
               })
               .then((res) => {
                 localStorage.setItem("id", res.data.id);
